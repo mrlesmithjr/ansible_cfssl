@@ -1,6 +1,37 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+  cfssl_certs:
+    - name: Kubernetes
+      ca:
+        signing:
+          default:
+            expiry: 8760h
+          hostnames:
+            - 192.168.250.11
+            - 192.168.250.12
+            - 192.168.250.13
+            - kubernetes.default
+          profiles:
+            kubernetes:
+              expiry: 8760h
+              usages:
+                - signing
+                - key encipherment
+                - server auth
+                - client auth
+      csr:
+        CN: Kubernetes
+        key:
+          algo: rsa
+          size: 2048
+        names:
+          - C: US
+            L: San Francisco
+            O: Internet Widgets, Inc.
+            OU: WWW
+            ST: California
   tasks:
     - name: Include ansible_cfssl
       include_role:
