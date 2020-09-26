@@ -1,13 +1,8 @@
 ---
 # defaults file for ansible_cfssl
-cfssl_version: 1.4.1
-cfssl_packages:
-  - package: "cfssl_{{ cfssl_version }}_linux_amd64"
-    dest: /usr/local/bin/cfssl
-  - package: "cfssljson_{{ cfssl_version }}_linux_amd64"
-    dest: /usr/local/bin/cfssljson
-cfssl_url: "https://github.com/cloudflare/cfssl/releases/download/v{{ cfssl_version }}"
-
+# Defines certs to generate. The format of the defined certs is converted to JSON
+# using the templates. So, this means you SHOULD be able to define whatever
+# additional parameters as desired.
 cfssl_certs:
   - name: example.com
     ca:
@@ -38,3 +33,15 @@ cfssl_certs:
 # Defines the directory in which to install CFSSL packages to
 cfssl_install_dir: /usr/local/bin
 
+# Defines the CFSSL packages to install
+cfssl_packages:
+  - package: "cfssl_{{ cfssl_version }}_linux_amd64"
+    dest: "{{ cfssl_install_dir }}/cfssl"
+  - package: "cfssljson_{{ cfssl_version }}_linux_amd64"
+    dest: "{{ cfssl_install_dir }}/cfssljson"
+
+# Defines download URL for CFSSL
+cfssl_url: "https://github.com/cloudflare/cfssl/releases/download/v{{ cfssl_version }}"
+
+# Define CFSSL version to install
+cfssl_version: 1.4.1
