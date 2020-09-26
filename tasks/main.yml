@@ -33,7 +33,7 @@
 
 - name: Generate Cert and Private Key
   shell:
-    cmd: cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+    cmd: "{{ cfssl_install_dir }}/cfssl gencert -initca ca-csr.json | {{ cfssl_install_dir }}/cfssljson -bare ca"
     chdir: /etc/ssl/private/{{ item.name }}
     creates: /etc/ssl/private/{{ item.name }}/ca.csr
   become: true
@@ -47,12 +47,12 @@
 
 - name: Generate Cert and Private Key
   shell: >
-    cfssl gencert \
+    {{ cfssl_install_dir }}/cfssl gencert \
     -ca=ca.pem \
     -ca-key=ca-key.pem \
     -config=ca-config.json \
     -hostname={{ item.0.hostnames|join(',') }} \
-    -profile={{ item.1 }} ca-csr.json | cfssljson -bare {{ item.1 }}
+    -profile={{ item.1 }} ca-csr.json | {{ cfssl_install_dir }}/cfssljson -bare {{ item.1 }}
   args:
     chdir: /etc/ssl/private/{{ item.0.name }}
     creates: /etc/ssl/private/{{ item.0.name }}/{{ item.1 }}.csr

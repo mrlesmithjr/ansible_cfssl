@@ -34,3 +34,7 @@ cfssl_certs:
           O: Internet Widgets, Inc.
           OU: WWW
           ST: California
+
+# Defines the directory in which to install CFSSL packages to
+cfssl_install_dir: /usr/local/bin
+
