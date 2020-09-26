@@ -1,2 +1,60 @@
 ---
 # tasks file for ansible_cfssl
+- name: Download CFSSL Package
+  get_url:
+    url: "{{ cfssl_url }}/{{ item.package }}"
+    dest: "{{ item.dest }}"
+    mode: u=rx,g=rx,o=rx
+  become: true
+  loop: "{{ cfssl_packages }}"
+
+- name: Creating CA Directories
+  file:
+    path: /etc/ssl/private/{{ item.name }}
+    state: directory
+  become: true
+  loop: "{{ cfssl_certs }}"
+
+- name: Generating CA Configs
+  template:
+    src: ca-config.json.j2
+    dest: /etc/ssl/private/{{ item.name }}/ca-config.json
+    mode: u=rw,g=r,o=r
+  become: true
+  loop: "{{ cfssl_certs }}"
+
+- name: Generating CSR's
+  template:
+    src: ca-csr.json.j2
+    dest: /etc/ssl/private/{{ item.name }}/ca-csr.json
+    mode: u=rw,g=r,o=r
+  become: true
+  loop: "{{ cfssl_certs }}"
+
+- name: Generate Cert and Private Key
+  shell:
+    cmd: cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+    chdir: /etc/ssl/private/{{ item.name }}
+    creates: /etc/ssl/private/{{ item.name }}/ca.csr
+  become: true
+  loop: "{{ cfssl_certs }}"
+
+# We do this as a hack for now because our profiles are a dictionary within a
+# list. Subelements doesn't work when looping over cfssl_certs.
+- name: Capture Profiles
+  set_fact:
+    cfssl_profiles: "{{ lookup('template', 'profiles.j2') }}"
+
+- name: Generate Cert and Private Key
+  shell: >
+    cfssl gencert \
+    -ca=ca.pem \
+    -ca-key=ca-key.pem \
+    -config=ca-config.json \
+    -hostname={{ item.0.hostnames|join(',') }} \
+    -profile={{ item.1 }} ca-csr.json | cfssljson -bare {{ item.1 }}
+  args:
+    chdir: /etc/ssl/private/{{ item.0.name }}
+    creates: /etc/ssl/private/{{ item.0.name }}/{{ item.1 }}.csr
+  become: true
+  loop: "{{ q('subelements', cfssl_profiles, 'profiles') }}"

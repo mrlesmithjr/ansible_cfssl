@@ -1,7 +1,6 @@
 # ansible_cfssl
 
-Ansible role to manage CloudFlare SSL certs using CFSSL
-
+Ansible role to manage CloudFlare SSL certs using [CFSSL](https://github.com/cloudflare/cfssl)
 
 ## Build Status
 
@@ -12,8 +11,6 @@ Ansible role to manage CloudFlare SSL certs using CFSSL
 ### Travis CI
 
 [![Build Status](https://travis-ci.org/mrlesmithjr/ansible_cfssl.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible_cfssl)
-
-
 
 ## Requirements
 

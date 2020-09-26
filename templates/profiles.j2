@@ -1,0 +1,9 @@
+{% set profiles = [] %}
+{% for item in cfssl_certs %}
+{%   set profile = {'name': item.name, 'profiles': [], 'hostnames': item.ca.signing.hostnames} %}
+{%   for key, value in item.ca.signing.profiles.items() %}
+{%     set _ = profile['profiles'].append(key) %}
+{%   endfor %}
+{%   set _ = profiles.append(profile) %}
+{% endfor %}
+{{ profiles }}

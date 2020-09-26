@@ -1,2 +1,36 @@
 ---
 # defaults file for ansible_cfssl
+cfssl_version: 1.4.1
+cfssl_packages:
+  - package: "cfssl_{{ cfssl_version }}_linux_amd64"
+    dest: /usr/local/bin/cfssl
+  - package: "cfssljson_{{ cfssl_version }}_linux_amd64"
+    dest: /usr/local/bin/cfssljson
+cfssl_url: "https://github.com/cloudflare/cfssl/releases/download/v{{ cfssl_version }}"
+
+cfssl_certs:
+  - name: example.com
+    ca:
+      signing:
+        default:
+          expiry: 8760h
+        hostnames: []
+        profiles:
+          kubernetes:
+            expiry: 8760h
+            usages:
+              - signing
+              - key encipherment
+              - server auth
+              - client auth
+    csr:
+      CN: example.com
+      key:
+        algo: rsa
+        size: 2048
+      names:
+        - C: US
+          L: San Francisco
+          O: Internet Widgets, Inc.
+          OU: WWW
+          ST: California
