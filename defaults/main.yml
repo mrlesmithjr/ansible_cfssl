@@ -3,32 +3,32 @@
 # Defines certs to generate. The format of the defined certs is converted to JSON
 # using the templates. So, this means you SHOULD be able to define whatever
 # additional parameters as desired.
-cfssl_certs:
-  - name: example.com
-    ca:
-      signing:
-        default:
-          expiry: 8760h
-        hostnames: []
-        profiles:
-          kubernetes:
-            expiry: 8760h
-            usages:
-              - signing
-              - key encipherment
-              - server auth
-              - client auth
-    csr:
-      CN: example.com
-      key:
-        algo: rsa
-        size: 2048
-      names:
-        - C: US
-          L: San Francisco
-          O: Internet Widgets, Inc.
-          OU: WWW
-          ST: California
+cfssl_certs: []
+# - name: example.com
+#   ca:
+#     signing:
+#       default:
+#         expiry: 8760h
+#       hostnames: []
+#       profiles:
+#         kubernetes:
+#           expiry: 8760h
+#           usages:
+#             - signing
+#             - key encipherment
+#             - server auth
+#             - client auth
+#   csr:
+#     CN: example.com
+#     key:
+#       algo: rsa
+#       size: 2048
+#     names:
+#       - C: US
+#         L: San Francisco
+#         O: Internet Widgets, Inc.
+#         OU: WWW
+#         ST: California
 
 # Defines the directory in which to install CFSSL packages to
 cfssl_install_dir: /usr/local/bin
